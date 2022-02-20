@@ -1,6 +1,6 @@
 import csv
 from django.core.management.base import BaseCommand
-from .models import Phone
+from phones.models import Phone
 
 
 class Command(BaseCommand):

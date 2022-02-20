@@ -7,17 +7,19 @@ def index(request):
     return redirect('catalog')
 
 
+SORT_MAP = {
+    'name': 'name',
+    'min_price': 'price',
+    'max_price': '-price',
+}
+
+
 def show_catalog(request):
     """Каталог."""
     template = 'catalog.html'
     sort_params = request.GET.get('sort', None)
     if sort_params is not None:
-        if sort_params == 'name':
-            phones = Phone.objects.order_by('name')
-        elif sort_params == 'min_price':
-            phones = Phone.objects.order_by('price')
-        elif sort_params == 'max_price':
-            phones = Phone.objects.order_by('-price')
+        phones = Phone.objects.order_by(SORT_MAP[sort_params])
     else:
         phones = Phone.objects.all()
 
