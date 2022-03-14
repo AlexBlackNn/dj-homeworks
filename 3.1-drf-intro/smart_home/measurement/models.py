@@ -4,7 +4,7 @@ from django.db import models
 class Sensor(models.Model):
     """Объект на котором проводят измерения."""
     name = models.TextField()
-    description = models.FloatField(blank=True)
+    description = models.TextField(blank=True)
 
 
 class Measurement(models.Model):
