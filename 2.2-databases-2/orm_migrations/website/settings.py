@@ -75,8 +75,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'netology_orm_relations',
         'HOST': '127.0.0.1',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
+        'USER': 'alex',
+        'PASSWORD': '1',
         'PORT': '5432',
     }
 }

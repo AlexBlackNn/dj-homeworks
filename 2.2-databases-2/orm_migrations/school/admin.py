@@ -1,11 +1,6 @@
 from django.contrib import admin
 
-from .models import Student, Teacher, StudentTeacher
-
-
-class StudentTeacherInline(admin.TabularInline):
-    model = StudentTeacher
-    extra = 1
+from .models import Student, Teacher
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
@@ -14,7 +9,6 @@ class StudentAdmin(admin.ModelAdmin):
     search_fields = ('group',)
     list_filter = ('teacher',)
     empty_value_display = '-пусто-'
-    inlines = [StudentTeacherInline]
 
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
