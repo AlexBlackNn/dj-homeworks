@@ -2,13 +2,13 @@ from django.db import models
 
 
 class Sensor(models.Model):
-    """Объект на котором проводят измерения."""
+    """Датчик, который производит измерения."""
     name = models.TextField()
     description = models.TextField(blank=True)
 
 
 class Measurement(models.Model):
-    """Измерение температуры на объекте."""
+    """Измерения датчика."""
 
     temperature = models.FloatField()
     sensor = models.ForeignKey(

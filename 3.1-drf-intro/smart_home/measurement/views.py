@@ -25,15 +25,16 @@ class SensorsView(ListAPIView):
     # а для создания новой стркои в БД post надо определить
     def post(self, request):
         Sensor.objects.create(
-                name=request.data['name'],
-                description=request.data['description'],
+            name=request.data['name'],
+            description=request.data['description'],
         )
         return Response({'status': 'OK'})
 
+
 class SensorDetailView(RetrieveAPIView):
     """
-    GET -> Получить информацию по конкретному датчику. Выдается полная информация
-    по датчику: ID, название, описание и список всех измерений с
+    GET -> Получить информацию по конкретному датчику. Выдается полная
+    информация по датчику: ID, название, описание и список всех измерений с
     температурой и временем.
 
     PATCH -> Изменить данные датчика.
@@ -41,6 +42,7 @@ class SensorDetailView(RetrieveAPIView):
 
     queryset = Sensor.objects.all()
     serializer_class = SensorDetailSerializer
+
     def get_object(self):
         pk = str(self.kwargs['pk'])
         sensor = Sensor.objects.get(pk=pk)
@@ -57,6 +59,7 @@ class SensorDetailView(RetrieveAPIView):
             serializer.save()
             return JsonResponse(data=serializer.data)
 
+
 class AddMeasurements(APIView):
     def post(self, request):
         sensor_id = request.data['sensor']
@@ -66,12 +69,3 @@ class AddMeasurements(APIView):
             sensor=sensor
         )
         return Response({'status': 'OK'})
-
-        # serializer = SensorDetailSerializer(
-        #     sensor,
-        #     data=request.data,
-        #     partial=True,
-        # )
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return JsonResponse(data=serializer.data)
