@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import DemoView
+from .views import SensorsInfoView,SensorDetailInfoView
 
 urlpatterns = [
      # TODO: зарегистрируйте необходимые маршруты
-     path('', DemoView.as_view()),
-     # path('weapon/<pk>/',WeaponView.as_view() )
+     path('sensors-info/', SensorsInfoView.as_view() ),
+     path('sensor-detail-info/<pk>', SensorDetailInfoView.as_view() )
  ]
