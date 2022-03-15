@@ -17,6 +17,16 @@ class Article(models.Model):
 
 
 class Scope(models.Model):
+    tag = models.TextField(verbose_name='tag', max_length=50)
     is_main = models.BooleanField()
-    tag = models.TextField(max_length=50)
     article = models.ManyToManyField(Article, related_name='scopes')
+
+class ArticleScope(models.Model):
+    article = models.ForeignKey(
+        Article,
+        on_delete=models.CASCADE,
+        related_name='scopes1')
+    scope = models.ForeignKey(
+        Scope,
+        on_delete=models.CASCADE,
+        related_name='scopes1')

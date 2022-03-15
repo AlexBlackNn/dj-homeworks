@@ -1,13 +1,17 @@
 from django.contrib import admin
 
-from .models import Article, Scope
+from .models import Article, Scope, ArticleScope
+
+
+class ArticleScopeInline(admin.TabularInline):
+    model = ArticleScope
 
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'title', 'text', 'published_at', 'image']
+    inlines = [ArticleScopeInline]
 
 
 @admin.register(Scope)
 class ScopeAdmin(admin.ModelAdmin):
-    list_display = ['is_main', 'tag']
+    list_display = ['pk','is_main', 'tag']
