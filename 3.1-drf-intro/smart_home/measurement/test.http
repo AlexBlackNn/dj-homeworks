@@ -1,0 +1,35 @@
+POST http://localhost:8000/api/sensors/
+Content-Type: application/json
+
+{
+  "name": "ESP16",
+  "description": "Датчик на кухне"
+}
+
+###
+
+GET http://localhost:8000/api/sensors/
+
+###
+
+GET http://localhost:8000/api/sensors/1
+
+###
+PATCH http://localhost:8000/api/sensors/1
+Content-Type: application/json
+
+{
+  "name": "Test1",
+  "description": "Датчик 1"
+}
+
+###
+POST http://localhost:8000/api/measurements/
+Content-Type: application/json
+
+{
+  "sensor": 1,
+  "temperature": -25.3
+}
+
+###

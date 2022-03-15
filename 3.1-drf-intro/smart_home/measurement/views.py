@@ -1,84 +1,77 @@
-# # TODO: опишите необходимые обработчики, рекомендуется использовать generics APIView классы:
-# # TODO: ListCreateAPIView, RetrieveUpdateAPIView, CreateAPIView
-from rest_framework.decorators import api_view
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
+from django.http import JsonResponse
+
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Sensor, Measurement
-from .serializers import MeasurementSerializer, SensorDetailSerializer, \
-    GetInfoSerializer
+from .serializers import GetInfoSerializer, SensorDetailSerializer
 
 
-class SensorsInfoView(ListAPIView):
+class SensorsView(ListAPIView):
+    """
+    GET -> Получить список датчиков.Выдается список с краткой информацией по
+    датчикам: ID, название и описание.
+
+    POST -> Cоздать новый датчик
+    """
+
     # откуда брать данные
     queryset = Sensor.objects.all()
     # c помощью чего будем сериализовывать
     serializer_class = GetInfoSerializer
 
-class SensorDetailInfoView(RetrieveAPIView):
-    # lookup_field = 'id'
+    # по умолчанию ListAPIView поддерживает только get запрос,
+    # а для создания новой стркои в БД post надо определить
+    def post(self, request):
+        Sensor.objects.create(
+                name=request.data['name'],
+                description=request.data['description'],
+        )
+        return Response({'status': 'OK'})
+
+class SensorDetailView(RetrieveAPIView):
+    """
+    GET -> Получить информацию по конкретному датчику. Выдается полная информация
+    по датчику: ID, название, описание и список всех измерений с
+    температурой и временем.
+
+    PATCH -> Изменить данные датчика.
+    """
+
     queryset = Sensor.objects.all()
-    serializer_class = GetInfoSerializer
+    serializer_class = SensorDetailSerializer
     def get_object(self):
         pk = str(self.kwargs['pk'])
         sensor = Sensor.objects.get(pk=pk)
         return sensor
 
-    # # по умолчанию ListAPIView поддерживает только get запрос,
-    # # а post надо определить
-    # def post(self, request):
-    #      return Response({'status': 'OK'})
-#
- # sensor_1 = Sensor.objects.create(
- #        name='ESP32',
- #        description='Датчик на кухне за холодильником',
- #    )
- #    sensor_2 = Sensor.objects.create(
- #        name='ESP32',
- #        description='Датчик на балконе',
- #    )
- #
- #    mesurement_1_sensor_1 = Measurement.objects.create(
- #        temperature=25,
- #        sensor=sensor_1,
- #    )
- #
- #    mesurement_2_sensor_1 = Measurement.objects.create(
- #        temperature=15,
- #        sensor=sensor_1,
- #    )
- #
- #    mesurement_2 = Measurement.objects.create(
- #        temperature=30,
- #        sensor=sensor_2,
- #    )
-# # class WeaponView(RetrieveAPIView):
-# #     queryset = Weapon.objects.all()
-# #     serializer_class = WeaponSerializer
-#
-# # @api_view(['GET', 'POST'])
-# # def demo(request):
-# #     if request.method == 'GET':
-# #         Weapon.objects.create(power=10, rarity='epic', value=20)
-# #         Weapon.objects.create(power=50, rarity='rare', value=200)
-# #         Weapon.objects.create(power=1000, rarity='ooops', value=900)
-# #         weapons = Weapon.objects.all()
-# #
-# #         ser = WeaponSerializer(weapons, many=True)
-# #
-# #         return Response(ser.data)
-# #     if request.method == 'POST':
-# #         return Response({'status': 'OK'})
-#
-# # class DemoView(APIView):
-# #     def get(self,request):
-# #         Weapon.objects.create(power=10, rarity='epic', value=20)
-# #         Weapon.objects.create(power=50, rarity='rare', value=200)
-# #         Weapon.objects.create(power=1000, rarity='ooops', value=900)
-# #         weapons = Weapon.objects.all()
-# #
-# #         ser = WeaponSerializer(weapons, many=True)
-# #         return Response(ser.data)
-# #     def post(self,request):
-# #         return Response({'status': 'OK'})
+    def patch(self, request, pk):
+        sensor = self.get_object()
+        serializer = GetInfoSerializer(
+            sensor,
+            data=request.data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(data=serializer.data)
+
+class AddMeasurements(APIView):
+    def post(self, request):
+        sensor_id = request.data['sensor']
+        sensor = Sensor.objects.get(pk=sensor_id)
+        Measurement.objects.create(
+            temperature=request.data['temperature'],
+            sensor=sensor
+        )
+        return Response({'status': 'OK'})
+
+        # serializer = SensorDetailSerializer(
+        #     sensor,
+        #     data=request.data,
+        #     partial=True,
+        # )
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return JsonResponse(data=serializer.data)
