@@ -1,3 +1,5 @@
+# Product
+###
 GET http://127.0.0.1:8000/api/v1/products/
 ###
 
@@ -5,8 +7,8 @@ POST http://127.0.0.1:8000/api/v1/products/
 Content-Type: application/json
 
 {
-  "title": "title6",
-  "description": "description"
+  "title": "Помидор3",
+  "description": "Лучшие помидоры на рынке"
 }
 ###
 
@@ -53,4 +55,24 @@ GET http://127.0.0.1:8000/api/v1/products/?limit=2
 ###
 GET http://127.0.0.1:8000/api/v1/products/?limit=2&offser=3
 ###
+# Stock
+GET http://127.0.0.1:8000/api/v1//stocks/
+###
+POST http://127.0.0.1:8000/api/v1//stocks/
+Content-Type: application/json
 
+{
+  "address": "мой1 адрес не 1дом и не улица, мой адрес сегодня такой: www.ленинград-спб.ru3",
+  "positions": [
+    {
+      "product": 3,
+      "quantity": 250,
+      "price": 120.50
+    },
+    {
+      "product": 3,
+      "quantity": 100,
+      "price": 180
+    }
+  ]
+}

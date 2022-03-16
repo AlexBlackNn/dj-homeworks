@@ -8,31 +8,6 @@ from .models import Product, Stock
 from .serializers import ProductSerializer, StockSerializer
 
 
-# class ProductViewSet(ViewSet):
-#     queryset = Product.objects.all()
-#     serializer_class = ProductSerializer
-#     # при необходимости добавьте параметры фильтрации
-#
-#     def list(self,request):
-#         """Перечисление продуктов"""
-#         return Response({'status':'ok'})
-#
-#     def retrive(self,request):
-#         """Вывод кокретного продукта"""
-#         return Response({'status': 'ok'})
-#
-#     def destroy(self,request):
-#         """"Удаление кокретного продукта"""
-#         return Response({'status': 'ok'})
-#
-#     def update(self,request):
-#         """Обновление продукта"""
-#         return Response({'status': 'ok'})
-#
-#     def create(self, request:
-#         """Создание продукта"""
-#         return Response({'status': 'ok'})
-
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -46,6 +21,7 @@ class ProductViewSet(ModelViewSet):
     search_fields = ['description']
     ordering_fields = ['title', 'id']
     pagination_class = LimitOffsetPagination
+
 
 class StockViewSet(ModelViewSet):
     queryset = Stock.objects.all()
