@@ -1,0 +1,56 @@
+GET http://127.0.0.1:8000/api/v1/products/
+###
+
+POST http://127.0.0.1:8000/api/v1/products/
+Content-Type: application/json
+
+{
+  "title": "title6",
+  "description": "description"
+}
+###
+
+GET http://127.0.0.1:8000/api/v1/products/3/
+
+###
+
+PATCH http://127.0.0.1:8000/api/v1/products/2/
+Content-Type: application/json
+
+{
+  "title": "new title"
+}
+
+###
+
+DELETE http://127.0.0.1:8000/api/v1/products/2/
+
+###
+# filters
+GET http://127.0.0.1:8000/api/v1/products/?title=title1
+
+###
+
+GET http://127.0.0.1:8000/api/v1/products/?search=first
+
+###
+# filters ordering descending
+GET http://127.0.0.1:8000/api/v1/products/?search=description&ordering=-id
+###
+# filters ordering acsending
+GET http://127.0.0.1:8000/api/v1/products/?search=description&ordering=id
+###
+# filters ordering acsending
+GET http://127.0.0.1:8000/api/v1/products/?search=description&ordering=title,id
+
+###
+# PAginator
+GET http://127.0.0.1:8000/api/v1/products/?page=1
+
+###
+# LimitOffsetPagination
+GET http://127.0.0.1:8000/api/v1/products/?limit=2
+###
+GET http://127.0.0.1:8000/api/v1/products/?limit=2&offser=3
+###
+
