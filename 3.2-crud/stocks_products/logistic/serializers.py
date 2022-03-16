@@ -35,9 +35,12 @@ class StockSerializer(serializers.ModelSerializer):
         # в нашем случае: таблицу StockProduct
         # с помощью списка positions
         for position in positions:
-            serializer = self.get_serializer(data=position)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
+            StockProduct.objects.create(
+                stock=stock,
+                product=position['product'],
+                quantity=position['quantity'],
+                price=position['price'],
+            )
         return stock
 
     def update(self, instance, validated_data):
@@ -50,5 +53,12 @@ class StockSerializer(serializers.ModelSerializer):
         # здесь вам надо обновить связанные таблицы
         # в нашем случае: таблицу StockProduct
         # с помощью списка positions
+        for position in positions:
+            StockProduct.objects.update(
+                stock=stock,
+                product=position['product'],
+                quantity=position['quantity'],
+                price=position['price'],
+            )
 
         return stock

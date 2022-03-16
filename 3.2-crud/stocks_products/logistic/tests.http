@@ -62,17 +62,39 @@ POST http://127.0.0.1:8000/api/v1//stocks/
 Content-Type: application/json
 
 {
-  "address": "мой1 адрес не 1дом и не улица, мой адрес сегодня такой: www.ленинград-спб.ru3",
+  "address": "м1ой адрес не дом и не улица, мой адрес сегодня такой: www.ленинград-спб.ru3",
   "positions": [
     {
-      "product": 3,
+      "product": 7,
       "quantity": 250,
       "price": 120.50
     },
     {
-      "product": 3,
+      "product": 8,
       "quantity": 100,
       "price": 180
     }
   ]
 }
+
+###
+PATCH http://127.0.0.1:8000/api/v1/stocks/5/
+Content-Type: application/json
+
+{
+  "positions": [
+    {
+      "product": 7,
+      "quantity": 100,
+      "price": 130.80
+    },
+    {
+      "product": 8,
+      "quantity": 243,
+      "price": 145
+    }
+  ]
+}
+
+###
+GET http://127.0.0.1:8000/api/v1/stocks/?products=8

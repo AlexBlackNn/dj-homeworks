@@ -5,17 +5,21 @@ from django.contrib import admin
 
 from .models import Product, Stock
 
+from .models import Stock, StockProduct, Product
+
+
+class StockProductInline(admin.TabularInline):
+    model = StockProduct
+
+
+@admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    """Настройка админки."""
+    inlines = [StockProductInline]
 
-    list_display = ('title',
-                    'description',
-                    )
-admin.site.register(Product, ProductAdmin)
 
+@admin.register(Stock)
 class StockAdmin(admin.ModelAdmin):
-    """Настройка админки."""
+    list_display = ['pk','address']
 
-    list_display = ('address',
-                    )
-admin.site.register(Stock, StockAdmin)
+
+
