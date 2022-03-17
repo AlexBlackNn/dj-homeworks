@@ -25,9 +25,9 @@ class Scope(models.Model):
 class ArticleScope(models.Model):
     article = models.ForeignKey(
         Article,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE,related_name='scopes')
     scope = models.ForeignKey(
         Scope,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE,related_name='scopes')
 
     is_main = models.BooleanField(default=False)
