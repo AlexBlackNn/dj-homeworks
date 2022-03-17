@@ -4,8 +4,8 @@ from .models import Article, Scope, ArticleScope
 
 
 class ArticleScopeInline(admin.TabularInline):
-    model = ArticleScope
-
+    model = Scope.article.through
+    extra = 1
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
@@ -14,4 +14,4 @@ class ArticleAdmin(admin.ModelAdmin):
 
 @admin.register(Scope)
 class ScopeAdmin(admin.ModelAdmin):
-    list_display = ['pk','is_main', 'tag']
+    inlines = [ArticleScopeInline]
