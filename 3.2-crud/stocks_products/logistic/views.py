@@ -17,8 +17,9 @@ class ProductViewSet(ModelViewSet):
     ]
     filterset_fields = ['title']
     # при необходимости добавьте параметры фильтрации
-    search_fields = ['description']
+    search_fields = ['description', 'title']
     ordering_fields = ['title', 'id']
+
     pagination_class = LimitOffsetPagination
 
 
