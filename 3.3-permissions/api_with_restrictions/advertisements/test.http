@@ -1,0 +1,11 @@
+###
+GET 127.0.0.1:8000/api/advertisements/
+###
+POST 127.0.0.1:8000/api/advertisements/
+Content-Type: application/json
+Authorization: Token 9269d5033f81ee2df02b36c7058f5d392fb88305
+
+{
+  "title": "Шкаф IKEA",
+  "description": "Срочно"
+}
