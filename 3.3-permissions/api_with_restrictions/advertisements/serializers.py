@@ -50,4 +50,3 @@ class AdvertisementSerializer(serializers.ModelSerializer):
                     "только 10 объявлений."
                 )
         return data
-

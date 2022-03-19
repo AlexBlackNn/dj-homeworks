@@ -1,11 +1,9 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework as filters
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from .models import Advertisement, DateFilter
+from .models import Advertisement
 from .serializers import AdvertisementSerializer
 
 from .permissions import IsOwnerOrReadOnly
