@@ -25,9 +25,9 @@ Authorization: Token 81c81fd8c495e41ea04b79c7a642946b6db7f35c
 
 ###
 # should work
-PATCH 127.0.0.1:8000/api/advertisements/1/
+PATCH 127.0.0.1:8000/api/advertisements/71/
 Content-Type: application/json
-Authorization: Token 0c659008a5ec2332932fa8e5fd6d3cc8b14f21d8
+Authorization: Token 81c81fd8c495e41ea04b79c7a642946b6db7f35c
 
 {
   "status": "CLOSED"
@@ -35,7 +35,7 @@ Authorization: Token 0c659008a5ec2332932fa8e5fd6d3cc8b14f21d8
 
 ###
 # should not work You do not have permission to perform this action
-PATCH 127.0.0.1:8000/api/advertisements/1/
+PATCH 127.0.0.1:8000/api/advertisements/49/
 Content-Type: application/json
 Authorization: Token 81c81fd8c495e41ea04b79c7a642946b6db7f35c
 
@@ -66,3 +66,26 @@ GET 127.0.0.1:8000/api/advertisements/?status=CLOSED
 GET 127.0.0.1:8000/api/advertisements/?created_at=2022-03-18T19:27:27.977839Z
 ###
 
+###
+
+# фильтрация по дате
+# пока не работает(((
+GET 127.0.0.1:8000/api/advertisements/?created_at_before=2000-03-18
+
+###
+# Удаление
+DELETE 127.0.0.1:8000/api/advertisements/2/
+Content-Type: application/json
+Authorization: Token 0c659008a5ec2332932fa8e5fd6d3cc8b14f21d8
+
+###
+# Удаление
+# You do not have permission to perform this action
+DELETE 127.0.0.1:8000/api/advertisements/3/
+Content-Type: application/json
+Authorization: Token 81c81fd8c495e41ea04b79c7a642946b6db7f35c
+
+###
+# Удаление
+# "detail": "Authentication credentials were not provided."
+DELETE 127.0.0.1:8000/api/advertisements/3/

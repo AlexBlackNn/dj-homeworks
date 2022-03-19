@@ -39,8 +39,15 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """Метод для валидации. Вызывается при создании и обновлении."""
-
-        # TODO: добавьте требуемую валидацию
-
+        user = self.context["request"].user
+        total_open_posts = user.advertisements.filter(status='OPEN').count()
+        # чтобы работал PATCH, для закрытия объявлений, длокируем только post
+        print(self.context["request"].method)
+        if self.context["request"].method == 'POST':
+            if total_open_posts == 10:
+                raise serializers.ValidationError(
+                    "Всего может быть открыто одновременно"
+                    "только 10 объявлений."
+                )
         return data
 

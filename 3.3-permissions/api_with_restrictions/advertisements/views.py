@@ -1,8 +1,10 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from .models import Advertisement
+from .models import Advertisement, DateFilter
 from .serializers import AdvertisementSerializer
 
 from .permissions import IsOwnerOrReadOnly
@@ -21,6 +23,6 @@ class AdvertisementViewSet(ModelViewSet):
         """Получение прав для действий."""
         if self.action in ["create"]:
             return [IsAuthenticated()]
-        if self.action in ["update", "partial_update"]:
+        if self.action in ["update", "partial_update", "destroy"]:
             return [IsOwnerOrReadOnly()]
         return []
