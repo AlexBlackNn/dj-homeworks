@@ -1,11 +1,68 @@
 ###
 GET 127.0.0.1:8000/api/advertisements/
 ###
+GET 127.0.0.1:8000/api/advertisements/
+Authorization: Token 0c659008a5ec2332932fa8e5fd6d3cc8b14f21d8
+###
 POST 127.0.0.1:8000/api/advertisements/
 Content-Type: application/json
-Authorization: Token 9269d5033f81ee2df02b36c7058f5d392fb88305
+Authorization: Token 0c659008a5ec2332932fa8e5fd6d3cc8b14f21d8
 
 {
   "title": "Шкаф IKEA",
   "description": "Срочно"
 }
+
+###
+POST 127.0.0.1:8000/api/advertisements/
+Content-Type: application/json
+Authorization: Token 81c81fd8c495e41ea04b79c7a642946b6db7f35c
+
+{
+  "title": "Шкаф IKEA",
+  "description": "Срочно"
+}
+
+###
+# should work
+PATCH 127.0.0.1:8000/api/advertisements/1/
+Content-Type: application/json
+Authorization: Token 0c659008a5ec2332932fa8e5fd6d3cc8b14f21d8
+
+{
+  "status": "CLOSED"
+}
+
+###
+# should not work You do not have permission to perform this action
+PATCH 127.0.0.1:8000/api/advertisements/1/
+Content-Type: application/json
+Authorization: Token 81c81fd8c495e41ea04b79c7a642946b6db7f35c
+
+{
+  "status": "CLOSED"
+}
+
+###
+# should not work Authentication credentials were not provided
+PATCH 127.0.0.1:8000/api/advertisements/1/
+Content-Type: application/json
+
+{
+  "status": "CLOSED"
+}
+###
+# search by status
+GET 127.0.0.1:8000/api/advertisements/?status=OPEN
+###
+
+###
+# search by status
+GET 127.0.0.1:8000/api/advertisements/?status=CLOSED
+###
+
+###
+# search by date
+GET 127.0.0.1:8000/api/advertisements/?created_at=2022-03-18T19:27:27.977839Z
+###
+
