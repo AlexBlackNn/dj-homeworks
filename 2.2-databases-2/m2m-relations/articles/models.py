@@ -17,17 +17,19 @@ class Article(models.Model):
 
 
 class Scope(models.Model):
-    tag = models.TextField(verbose_name='tag', max_length=50)
+    name = models.TextField(verbose_name='tag', max_length=50)
     article = models.ManyToManyField(Article, through='ArticleScope')
     def __str__(self):
-        return self.tag
+        return self.name
 
 class ArticleScope(models.Model):
     article = models.ForeignKey(
         Article,
-        on_delete=models.CASCADE,related_name='scopes')
-    scope = models.ForeignKey(
+        on_delete=models.CASCADE, related_name='scopes')
+    tag = models.ForeignKey(
         Scope,
-        on_delete=models.CASCADE,related_name='scopes')
+        on_delete=models.CASCADE,
+        default='',
+        related_name='scopes')
 
     is_main = models.BooleanField(default=False)
