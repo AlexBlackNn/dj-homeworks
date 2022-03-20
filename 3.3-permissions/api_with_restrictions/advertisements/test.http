@@ -89,3 +89,12 @@ Authorization: Token 81c81fd8c495e41ea04b79c7a642946b6db7f35c
 # Удаление
 # "detail": "Authentication credentials were not provided."
 DELETE 127.0.0.1:8000/api/advertisements/3/
+###
+
+PATCH 127.0.0.1:8000/api/advertisements/26/
+Content-Type: application/json
+Authorization: Token 81c81fd8c495e41ea04b79c7a642946b6db7f35c
+
+{
+  "status": "CLOSED"
+}

@@ -5,16 +5,8 @@ from rest_framework.viewsets import ModelViewSet
 
 from .models import Advertisement
 from .serializers import AdvertisementSerializer
-
+from .filters import AdvertisementFilter
 from .permissions import IsOwnerOrReadOnly
-
-
-class MetricFilter(filters.FilterSet):
-    created_at = filters.DateFromToRangeFilter()
-
-    class Meta:
-        model = Advertisement
-        fields = ['status', 'created_at']
 
 
 class AdvertisementViewSet(ModelViewSet):
@@ -25,7 +17,7 @@ class AdvertisementViewSet(ModelViewSet):
     queryset = Advertisement.objects.all()
     serializer_class = AdvertisementSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_class = MetricFilter
+    filterset_class = AdvertisementFilter
 
     def get_permissions(self):
         """Получение прав для действий."""

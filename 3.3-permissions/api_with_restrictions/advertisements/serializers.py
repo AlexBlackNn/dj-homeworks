@@ -23,7 +23,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advertisement
         fields = ('id', 'title', 'description', 'creator',
-                  'status', 'created_at', )
+                  'status', 'created_at',)
 
     def create(self, validated_data):
         """Метод для создания"""
@@ -39,14 +39,20 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """Метод для валидации. Вызывается при создании и обновлении."""
-        user = self.context["request"].user
+        user = self.context['request'].user
         total_open_posts = user.advertisements.filter(status='OPEN').count()
         # чтобы работал PATCH, для закрытия объявлений, длокируем только post
-        print(self.context["request"].method)
-        if self.context["request"].method == 'POST':
+        print(self.context['request'].method)
+        if self.context['request'].method == 'POST':
             if total_open_posts == 10:
                 raise serializers.ValidationError(
-                    "Всего может быть открыто одновременно"
-                    "только 10 объявлений."
+                    'Всего может быть открыто одновременно'
+                    'только 10 объявлений.'
+                )
+        elif self.context['request'].method == 'PATCH':
+            if total_open_posts == 10 and data['status'] == 'OPEN':
+                raise serializers.ValidationError(
+                    'Всего может быть открыто одновременно'
+                    'только 10 объявлений.'
                 )
         return data
