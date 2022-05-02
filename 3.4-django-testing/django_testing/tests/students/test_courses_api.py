@@ -1,6 +1,8 @@
 # https://stackoverflow.com/questions/14186055/django-test-app-error-got-an-error-creating-the-test-database-permission-deni
-# in case of "Got an error creating the test database: permission denied to create database"
-"""hen Django runs the test suite, it creates a new database, in your case
+# in case of "Got an error creating the test database: permission denied to
+# create database"
+
+"""When Django runs the test suite, it creates a new database, in your case
 test_db.  The postgres user with username django does not have permission to
 create a database, hence the error message. When you run migrate or syncdb,
 Django does not try to create the finance database, so you don't get any
@@ -39,11 +41,13 @@ from model_bakery import baker
 def client():
     return APIClient()
 
+
 @pytest.fixture
 def student():
     student = Student.objects.create(id=1, name='Alex')
     student.save()
     return student
+
 
 # Фабрика курсов
 @pytest.fixture
@@ -52,12 +56,14 @@ def course_factory():
         return baker.make(Course, *args, **kwargs)
     return factory
 
+
 # Фабрика студентов
 @pytest.fixture
 def student_factory():
     def factory(*args, **kwargs):
         return baker.make(Student, *args, **kwargs)
     return factory
+
 
 @pytest.mark.django_db
 def test_get_one_course(client, student_factory, course_factory):
@@ -125,7 +131,6 @@ def test_get_course_with_id(client, student_factory, course_factory):
     # Arrange stage
     # Определяем количество курсов в начале
     quantity = 5
-    num_courses = Course.objects.count()
     # создаем курс через фабрику
     courses = course_factory(_quantity=5)
     # создаем студента через фабрику
@@ -150,7 +155,7 @@ def test_get_course_with_id(client, student_factory, course_factory):
 
 @pytest.mark.django_db
 def test_create_course(client, student):
-    """тест успешного создания курса """
+    """Тест успешного создания курса."""
     # создаем студента
     #  в client.post в students передается id студента
     courses_at_start = Course.objects.count()
@@ -167,7 +172,7 @@ def test_create_course(client, student):
 
 @pytest.mark.django_db
 def test_update_course(client, course_factory, student_factory):
-    """тест успешного создания курса """
+    """Тест обновления курса."""
     # создаем студента
     #  в client.post в students передается id студента
     # создаем курс через фабрику
@@ -192,7 +197,7 @@ def test_update_course(client, course_factory, student_factory):
 
 @pytest.mark.django_db
 def test_delete_course(client, course_factory, student_factory):
-    """тест успешного удаления курса """
+    """Тест успешного удаления курса."""
     # создаем студента
     #  в client.post в students передается id студента
     # создаем курс через фабрику
