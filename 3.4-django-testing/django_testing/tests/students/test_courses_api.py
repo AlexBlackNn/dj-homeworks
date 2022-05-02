@@ -34,6 +34,7 @@ from rest_framework import status
 from students.models import Student, Course
 from model_bakery import baker
 
+
 @pytest.fixture
 def client():
     return APIClient()
@@ -44,34 +45,112 @@ def student():
     student.save()
     return student
 
-# Фабрика объектов
+# Фабрика курсов
 @pytest.fixture
-def message_factory():
+def course_factory():
     def factory(*args, **kwargs):
         return baker.make(Course, *args, **kwargs)
     return factory
 
-@pytest.mark.django_db
-def test_get_course(client, student, message_factory):
-    # Arrange (предустановка данных, запись их в ДБ и т.д.)
-    courses = message_factory(_quantity=5)
+# Фабрика студентов
+@pytest.fixture
+def student_factory():
+    def factory(*args, **kwargs):
+        return baker.make(Student, *args, **kwargs)
+    return factory
 
-    course = Course(id=len(courses)+1, name='django')
-    course.save()
-    course.students.add(student)
-    # Act (функционал теста)
+@pytest.mark.django_db
+def test_get_one_course(client, student_factory, course_factory):
+    """Проверка получения 1го курса (retrieve-логика)."""
+    # Arrange stage
+    # Определяем количество курсов в начале
+    num_courses = Course.objects.count()
+    # создаем курс через фабрику
+    course = course_factory(_quantity=1)
+    # создаем студента через фабрику
+    student = student_factory(_quantity=1)
+    # добавляем студента к курсу
+    course[0].students.add(student[0])
+    # Act stage
+    # Делаем запрос к endpoint
     response = client.get('/api/v1/courses/')
 
-    # Assert(проверка, что действие выполнено корректно)
+    # Assert stage
+    # проверка, что запрос прошел удачно
     assert response.status_code == status.HTTP_200_OK
 
-    data = response.json()
-    assert len(data) == len(courses)+1
+    # проверка, что число курсов увеличилось на 1 после его создания
+    assert num_courses + 1 == Course.objects.count()
 
-    assert data[-1].get('name') == 'django'
+    # проверяем, что вернулся именно тот курс, который запрашивали
+    data = response.json()
+    assert data[0].get('name') == course[0].name
+
+
+@pytest.mark.django_db
+def test_get_list_courses(client, student_factory, course_factory):
+    """Проверка получения списка курсов (list-логика)."""
+    # Arrange stage
+    # Определяем количество курсов в начале
+    quantity = 5
+    num_courses = Course.objects.count()
+    # создаем курс через фабрику
+    courses = course_factory(_quantity=quantity)
+    # создаем студента через фабрику
+    students = student_factory(_quantity=quantity)
+    # добавляем студента к курсу
+    for course, student in zip(courses, students):
+        course.students.add(student)
+
+    # Act stage
+    # Делаем запрос к endpoint
+    response = client.get('/api/v1/courses/')
+
+    # Assert stage
+    # проверка, что запрос прошел удачно
+    assert response.status_code == status.HTTP_200_OK
+
+    # проверка, что число курсов увеличилось на 1 после его создания
+    assert num_courses + quantity == Course.objects.count()
+
+    # проверяем, что вернулся именно тe курсы, которые запрашивали
+    data = response.json()
+    for course, dict_ in zip(courses, data):
+        assert dict_.get('name') == course.name
+
+
+@pytest.mark.django_db
+def test_get_course_with_id(client, student_factory, course_factory):
+    """Проверка фильтрации списка курсов по id."""
+    # Arrange stage
+    # Определяем количество курсов в начале
+    quantity = 5
+    num_courses = Course.objects.count()
+    # создаем курс через фабрику
+    courses = course_factory(_quantity=5)
+    # создаем студента через фабрику
+    students = student_factory(_quantity=quantity)
+    # добавляем студента к курсу
+    for course, student in zip(courses, students):
+        course.students.add(student)
+    # Act stage
+    # Делаем запрос к endpoint
+    response = client.get(f'/api/v1/courses/{quantity}/')
+
+    # Assert stage
+    # проверка, что запрос прошел удачно
+    assert response.status_code == status.HTTP_200_OK
+
+    # проверяем, что вернулся именно тот курс, который запрашивали
+    data = response.json()
+    assert data.get('name') == courses[-1].name
+
+
+
 
 @pytest.mark.django_db
 def test_create_course(client, student):
+    """тест успешного создания курса """
     # создаем студента
     #  в client.post в students передается id студента
     courses_at_start = Course.objects.count()
@@ -84,3 +163,49 @@ def test_create_course(client, student):
     courses_in_the_end = Course.objects.count()
     assert response.status_code == status.HTTP_201_CREATED
     assert courses_at_start+1 == courses_in_the_end
+
+
+@pytest.mark.django_db
+def test_update_course(client, course_factory, student_factory):
+    """тест успешного создания курса """
+    # создаем студента
+    #  в client.post в students передается id студента
+    # создаем курс через фабрику
+    course = course_factory(_quantity=1)
+    # создаем студента через фабрику
+    student = student_factory(_quantity=1)
+    # добавляем студента к курсу
+    course[0].students.add(student[0])
+
+    courses_at_start = Course.objects.count()
+    response = client.patch('/api/v1/courses/1/', data={
+                    'name': 'django_v2',
+                }
+                )
+    courses_in_the_end = Course.objects.count()
+    assert response.status_code == status.HTTP_200_OK
+    assert courses_at_start == courses_in_the_end
+
+    # проверка обновления
+    data = response.json()
+    assert data.get('name') == 'django_v2'
+
+@pytest.mark.django_db
+def test_delete_course(client, course_factory, student_factory):
+    """тест успешного удаления курса """
+    # создаем студента
+    #  в client.post в students передается id студента
+    # создаем курс через фабрику
+    course = course_factory(_quantity=1)
+    # создаем студента через фабрику
+    student = student_factory(_quantity=1)
+    # добавляем студента к курсу
+    course[0].students.add(student[0])
+
+    courses_at_start = Course.objects.count()
+    response = client.delete('/api/v1/courses/1/')
+    print(response.status_code)
+    courses_in_the_end = Course.objects.count()
+    print(courses_in_the_end)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert courses_at_start-1 == courses_in_the_end
