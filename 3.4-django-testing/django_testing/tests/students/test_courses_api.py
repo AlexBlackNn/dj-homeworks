@@ -79,7 +79,37 @@ def test_get_one_course(client, student_factory, course_factory):
     course[0].students.add(student[0])
     # Act stage
     # Делаем запрос к endpoint
-    response = client.get('/api/v1/courses/')
+    response = client.get(f'/api/v1/courses/{course[0].id}/')
+
+    # Assert stage
+    # проверка, что запрос прошел удачно
+    assert response.status_code == status.HTTP_200_OK
+
+    # проверка, что число курсов увеличилось на 1 после его создания
+    assert num_courses + 1 == Course.objects.count()
+
+    # проверяем, что вернулся именно тот курс, который запрашивали
+    data = response.json()
+    assert data.get('name') == course[0].name
+
+
+@pytest.mark.django_db
+def test_get_course_filters_name(client, student_factory, course_factory):
+    """Фильтрация по name."""
+    # Arrange stage
+    # Определяем количество курсов в начале
+    num_courses = Course.objects.count()
+    # создаем курс через фабрику
+    course = course_factory(_quantity=1)
+
+    # создаем студента через фабрику
+    student = student_factory(_quantity=1)
+    # добавляем студента к курсу
+    course[0].students.add(student[0])
+
+    # Act stage
+    # Делаем запрос к endpoint
+    response = client.get(f'/api/v1/courses/?name={course[0].name}')
 
     # Assert stage
     # проверка, что запрос прошел удачно
@@ -92,6 +122,34 @@ def test_get_one_course(client, student_factory, course_factory):
     data = response.json()
     assert data[0].get('name') == course[0].name
 
+@pytest.mark.django_db
+def test_get_course_filters_id(client, student_factory, course_factory):
+    """Фильтрация по id."""
+    # Arrange stage
+    # Определяем количество курсов в начале
+    num_courses = Course.objects.count()
+    # создаем курс через фабрику
+    course = course_factory(_quantity=1)
+
+    # создаем студента через фабрику
+    student = student_factory(_quantity=1)
+    # добавляем студента к курсу
+    course[0].students.add(student[0])
+
+    # Act stage
+    # Делаем запрос к endpoint
+    response = client.get(f'/api/v1/courses/?id={course[0].id}')
+
+    # Assert stage
+    # проверка, что запрос прошел удачно
+    assert response.status_code == status.HTTP_200_OK
+
+    # проверка, что число курсов увеличилось на 1 после его создания
+    assert num_courses + 1 == Course.objects.count()
+
+    # проверяем, что вернулся именно тот курс, который запрашивали
+    data = response.json()
+    assert data[0].get('name') == course[0].name
 
 @pytest.mark.django_db
 def test_get_list_courses(client, student_factory, course_factory):
@@ -140,7 +198,7 @@ def test_get_course_with_id(client, student_factory, course_factory):
         course.students.add(student)
     # Act stage
     # Делаем запрос к endpoint
-    response = client.get(f'/api/v1/courses/{quantity}/')
+    response = client.get(f'/api/v1/courses/{courses[-1].id}/')
 
     # Assert stage
     # проверка, что запрос прошел удачно
@@ -160,7 +218,6 @@ def test_create_course(client, student):
     #  в client.post в students передается id студента
     courses_at_start = Course.objects.count()
     response = client.post('/api/v1/courses/', data={
-                    'id': 1,
                     'name': 'django',
                     'students': student.id
                 }
@@ -183,7 +240,7 @@ def test_update_course(client, course_factory, student_factory):
     course[0].students.add(student[0])
 
     courses_at_start = Course.objects.count()
-    response = client.patch('/api/v1/courses/1/', data={
+    response = client.patch(f'/api/v1/courses/{course[0].id}/', data={
                     'name': 'django_v2',
                 }
                 )
@@ -208,7 +265,7 @@ def test_delete_course(client, course_factory, student_factory):
     course[0].students.add(student[0])
 
     courses_at_start = Course.objects.count()
-    response = client.delete('/api/v1/courses/1/')
+    response = client.delete(f'/api/v1/courses/{course[0].id}/')
     print(response.status_code)
     courses_in_the_end = Course.objects.count()
     print(courses_in_the_end)

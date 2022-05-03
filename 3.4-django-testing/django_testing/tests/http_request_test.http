@@ -1,0 +1,21 @@
+###
+# Получаем список всех постов
+GET http://localhost:8000/api/v1/courses/
+
+###
+# Cоздаём новый пост, автора можно указать любого
+POST http://localhost:8000/api/v1/courses/
+Content-Type: application/json
+
+{
+  "name": "new django course",
+  "students": [1]
+}
+
+###
+# Получаем список всех постов
+GET http://localhost:8000/api/v1/courses/?id=1
+
+###
+# Получаем список всех постов
+GET http://localhost:8000/api/v1/courses/?name=new django course
